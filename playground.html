@@ -1,11 +1,16 @@
 <html>
 	<head>
 		<script src="lib/workstation.js"></script>
+		<script src="lib/workstation.browser.js"></script>
 		
 		<script>
-			screen("screen 1", function() {
-				label("testing");
-			});
+			function run() {
+				app("hello world", function() {
+					screen("screen 1", function() {
+						label("testing");
+					});
+				});
+			}
 		</script>
 	</head>
 	<body onload="run();">

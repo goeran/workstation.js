@@ -1,7 +1,15 @@
 describe("script", function() {
 	it("should have a global variable called workstation", function() {
-		expect(workstation.ast).toBeDefined();
+		expect(workstation).toBeDefined();
 	});	
+	
+	it("global variable should have ast", function() {
+		expect(workstation.ast).toBeDefined();
+	});
+	
+	it("global variable should have a runtime", function() {
+		expect(workstation.runtime).toBeDefined();
+	});
 });
 
 describe("keywords", function() {
@@ -12,6 +20,20 @@ describe("keywords", function() {
 	function lastScreenInAst() {
 		return workstation.ast[workstation.ast.length - 1];
 	}
+	
+	describe("app", function() {
+		it("should invoke runtime", function() {
+			runtimeWasInvoked = false;
+			workstation.runtime = {
+				run: function() {
+					runtimeWasInvoked = true;	
+				}
+			}
+			app("screen 1");
+			
+			expect(runtimeWasInvoked).toBe(true);
+		});
+	});
 	
 	describe("screen", function() {
 		it("should append to the AST", function() {
