@@ -49,6 +49,10 @@ describe("keywords", function() {
 				expect(lastScreenInAst().views[0].type).toEqual("label");
 				expect(lastScreenInAst().views[0].text).toEqual("hello world");
 			});	
+		});
+		
+		it("should not be possible to call if screen keyword is used first", function() {
+			expect(label).toThrow("screen must be defined before label can be added");
 		});		
 	});
 });
