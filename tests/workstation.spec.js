@@ -13,13 +13,33 @@ describe("script", function() {
 });
 
 describe("abstract syntax tree", function() {
-	it("should throw exception when index is out of range", function() {
-		screen("screen 1", function() {
-			label("my label");
+	beforeEach(function() {
+		workstation.ast().clear();	
+	});
+	
+	describe("widgets", function() {
+		it("should throw exception when index is out of range", function() {
+			screen("screen 1", function() {
+				label("my label");
+			});
+			
+			expect(getWidget(-1)).toThrow("Index out of range.");
+			expect(getWidget(100)).toThrow("Index out of range.");
 		});
+	});
+	
+	describe("screen", function() {
+		it("should have enumerator method for screens", function() {
+			screen("screen 1");
 		
-		expect(getWidget(-1)).toThrow("Index out of range.");
-		expect(getWidget(100)).toThrow("Index out of range.");
+			expect(workstation.ast().eachScreen).toBeDefined();
+		
+			var numberOfScreensTouched = 0;
+		    workstation.ast().eachScreen(function(screen) {
+		    		numberOfScreensTouched++;
+		    });
+		    expect(numberOfScreensTouched).toEqual(workstation.ast().numberOfScreens()); 
+		});
 	});
 	
 	function getWidget(index) {
