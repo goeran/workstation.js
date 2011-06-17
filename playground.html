@@ -7,11 +7,12 @@
 		<script>
 			function run() {
 				app("hello world", function() {
-					screen("screen 1", function() {
+					screen("screen 123", function() {
 						label("testing", { top: 10, left: 20, color: "green" });
-						textbox("", { top: 10});
+						textbox("", { top: 10 });
+						
 						label("hello world", { top: 40, left: 20, color: "red" });
-						textbox("", {});
+						textbox();
 					});
 				});
 			}
