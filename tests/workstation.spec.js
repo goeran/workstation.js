@@ -24,18 +24,22 @@ describe("abstract syntax tree", function() {
 	
 	function getWidget(index) {
 		return function() {
-			workstation.lastScreen().getWidget(index);
+			workstation.ast().lastScreen().getWidget(index);
 		}
 	}  
 });
 
 describe("keywords", function() {
 	beforeEach(function() {
-		workstation.ast = [];
+		workstation.ast().clear();
 	});
 	
-	function lastScreenInAst() {
-		return workstation.ast[workstation.ast.length - 1];
+	function getScreen(index) {
+		return workstation.ast().getScreen(index);
+	}
+	
+	function lastScreen() {
+		return workstation.ast().lastScreen();
 	}
 	
 	describe("app", function() {
@@ -57,8 +61,8 @@ describe("keywords", function() {
 			screen("screen 1");
 			screen("screen 2");
 			
-			expect(workstation.ast.length).toEqual(2);
-			expect(workstation.ast[0].title).toEqual("screen 1");
+			expect(workstation.ast().numberOfScreens()).toEqual(2);
+			expect(getScreen(0).title).toEqual("screen 1");
 		});
 		
 		it("should execute code block", function() {
@@ -75,20 +79,19 @@ describe("keywords", function() {
 		it("should append to the last screen in the AST", function() {
 			screen("screen 1", function() {
 				label("hello world");
-				
 			});
 			
-			expect(lastScreenInAst().numberOfWidgets()).toEqual(1);
-			expect(lastScreenInAst().getWidget(0).type).toEqual("label");
+			expect(getScreen(0).numberOfWidgets()).toEqual(1);
+			expect(getScreen(0).getWidget(0).type).toEqual("label");
 		});
 		
 		it("should set properties", function() {
 			screen("screen 1", function() {
 				label("hello world");
 				
-				expect(lastScreenInAst().getWidget(0).type).toEqual("label");
-				expect(lastScreenInAst().getWidget(0).text).toEqual("hello world");
-				expect(lastScreenInAst().getWidget(0).style).toBeDefined();
+				expect(getScreen(0).getWidget(0).type).toEqual("label");
+				expect(getScreen(0).getWidget(0).text).toEqual("hello world");
+				expect(getScreen(0).getWidget(0).style).toBeDefined();
 			});	
 		});
 		
@@ -104,9 +107,9 @@ describe("keywords", function() {
 				textbox();
 			});
 			
-			expect(lastScreenInAst().numberOfWidgets()).toEqual(2);
-			expect(lastScreenInAst().getWidget(0).type).toEqual("textbox");
-			expect(lastScreenInAst().getWidget(1).type).toEqual("textbox");
+			expect(lastScreen().numberOfWidgets()).toEqual(2);
+			expect(lastScreen().getWidget(0).type).toEqual("textbox");
+			expect(lastScreen().getWidget(1).type).toEqual("textbox");
 		})
 	});
 });
