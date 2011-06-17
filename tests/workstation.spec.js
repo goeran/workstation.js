@@ -59,9 +59,10 @@ describe("keywords", function() {
 			screen("screen 1", function() {
 				label("hello world");
 				
-				expect(lastScreenInAst().views.length).toEqual(1);
-				expect(lastScreenInAst().views[0].type).toEqual("label");
 			});
+			
+			expect(lastScreenInAst().views.length).toEqual(1);
+			expect(lastScreenInAst().views[0].type).toEqual("label");
 		});
 		
 		it("should set properties", function() {
@@ -70,11 +71,24 @@ describe("keywords", function() {
 				
 				expect(lastScreenInAst().views[0].type).toEqual("label");
 				expect(lastScreenInAst().views[0].text).toEqual("hello world");
+				expect(lastScreenInAst().views[0].style).toBeDefined();
 			});	
 		});
 		
 		it("should not be possible to call if screen keyword is used first", function() {
 			expect(label).toThrow("screen must be defined before label can be added");
 		});		
+	});
+	
+	describe("textbox", function() {
+		it("should be appended to the last screen in the AST", function() {
+			screen("screen 1", function() {
+				textbox("Username", function() {
+				});
+			});
+			
+			expect(lastScreenInAst().views.length).toEqual(1);
+			expect(lastScreenInAst().views[0].type).toEqual("textbox");
+		})
 	});
 });

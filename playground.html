@@ -1,5 +1,6 @@
 <html>
 	<head>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 		<script src="lib/workstation.js"></script>
 		<script src="lib/workstation.browser.js"></script>
 		
@@ -7,7 +8,10 @@
 			function run() {
 				app("hello world", function() {
 					screen("screen 1", function() {
-						label("testing");
+						label("testing", { top: 10, left: 20, color: "green" });
+						textbox("", { top: 10});
+						label("hello world", { top: 40, left: 20, color: "red" });
+						textbox("", {});
 					});
 				});
 			}
