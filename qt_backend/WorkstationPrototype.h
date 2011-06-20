@@ -6,6 +6,8 @@
 #include <QtScript/QScriptable>
 #include <QtScript/QScriptValue>
 
+class Workstation;
+
 class WorkstationPrototype : public QObject, public QScriptable
 {
   Q_OBJECT
@@ -18,6 +20,9 @@ class WorkstationPrototype : public QObject, public QScriptable
   unsigned int numberOfScreens() const;
   QScriptValue lastScreen();
   void run();
+
+ private:
+  Workstation* getWorkstation() const;
 };
 
 #endif
