@@ -8,11 +8,11 @@
 			function init() {
 				app("hello world", function() {
 					screen("screen 123", function() {
-						label("Username", { top: 10, left: 20 });
-						textbox("", { top: 8, left: 100 });
+						label({ text: "Username", style: { top: 10, left: 20 } });
+						textbox({ style: { top: 8, left: 100 } });
 						
-						label("Password", { top: 40, left: 20 });
-						textbox("", { top: 38, left: 100 });
+						label({ text: "Password", style: { top: 40, left: 20 } });
+						textbox({ style: { top: 38, left: 100 } });
 					});
 				});
 			}

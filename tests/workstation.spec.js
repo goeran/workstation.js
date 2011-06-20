@@ -52,6 +52,21 @@ describe("abstract syntax tree", function() {
 describe("keywords", function() {
 	beforeEach(function() {
 		workstation.ast().clear();
+		this.addMatchers({
+			attributesToBeDefined: function(attributes) {
+				var matches = [];
+				for (i = 0; i < attributes.length; i++) {
+					for (attribute in this.actual) {
+						if (attributes[i] === attribute &&
+							typeof this.actual[attributes[i]] !== "undefined") {
+							matches.push(true);
+							break;
+						}
+					}
+				}
+				return matches.length === attributes.length;
+			}	
+		});
 	});
 	
 	function getScreen(index) {
@@ -60,6 +75,10 @@ describe("keywords", function() {
 	
 	function lastScreen() {
 		return workstation.ast().lastScreen();
+	}
+	
+	function getWidget(index) {
+		return lastScreen().getWidget(index);
 	}
 	
 	describe("app", function() {
@@ -105,31 +124,121 @@ describe("keywords", function() {
 			expect(getScreen(0).getWidget(0).type).toEqual("label");
 		});
 		
+		it("should define initial attributes", function() {
+			screen("screen 1", function() {
+				label({});
+			});
+			expect(getWidget(0)).attributesToBeDefined(["id", "text", "style", "type"]);
+		});
+
 		it("should set properties", function() {
 			screen("screen 1", function() {
 				label("hello world");
 				
-				expect(getScreen(0).getWidget(0).type).toEqual("label");
-				expect(getScreen(0).getWidget(0).text).toEqual("hello world");
-				expect(getScreen(0).getWidget(0).style).toBeDefined();
+				expect(getWidget(0).type).toEqual("label");
+				expect(getWidget(0).text).toEqual("hello world");
+				expect(getWidget(0).style).toBeDefined();
 			});	
 		});
 		
 		it("should not be possible to call if screen keyword is used first", function() {
 			expect(label).toThrow("screen must be defined before label can be added");
 		});		
+		
+		it("should be possible to pass in several args", function() {
+			screen("screen 1", function() {
+				label({ id: "lblUsername", text: "Username" });
+			});
+
+			expect(getWidget(0).id).toEqual("lblUsername");
+			expect(getWidget(0).text).toEqual("Username");
+		});
+		
+		it("should be possible to use string arg convention", function() {
+			screen("screen 1", function() {
+				label("test");
+			});
+			
+			expect(getWidget(0).id).toEqual("labeltest");
+			expect(getWidget(0).text).toEqual("test");
+			expect(getWidget(0).style).toEqual({});
+			expect(getWidget(0).type).toEqual("label");
+		});
 	});
 	
 	describe("textbox", function() {
 		it("should be appended to the last screen in the AST", function() {
 			screen("screen 1", function() {
-				textbox("Username");
+				textbox({ id: "Username" });
 				textbox();
+				textbox({ onclick: function() {
+				}});
+				textbox({ style: { color: "red" } })
 			});
 			
-			expect(lastScreen().numberOfWidgets()).toEqual(2);
-			expect(lastScreen().getWidget(0).type).toEqual("textbox");
-			expect(lastScreen().getWidget(1).type).toEqual("textbox");
-		})
+			expect(lastScreen().numberOfWidgets()).toEqual(4);
+			expect(getWidget(0).id).toEqual("Username");
+			expect(getWidget(3).style).toEqual({ color: "red" });
+			
+			for (i = 0; i < 3; i++) {
+				expect(getWidget(i).type).toEqual("textbox");
+			}
+		});
+		
+		it("should define initial attributes", function() {
+			screen("screen 1", function() {
+				textbox({});
+			});
+			
+			expect(getWidget(0)).attributesToBeDefined(["id", "text", "style", "type"]);
+		});
+	});
+	
+	describe("button", function() {
+		it("should be appended to the last screen in AST", function() {
+			screen("screen 1", function() {
+				button({ text: "Click me" });
+				button("Click me to");
+				button({ id: "btnLogin", text: "Login" });
+			});
+			
+			expect(lastScreen().numberOfWidgets()).toEqual(3);
+			expect(getWidget(0).text).toEqual("Click me");
+			expect(getWidget(1).text).toEqual("Click me to");
+			expect(getWidget(2).id).toEqual("btnLogin");
+			
+			for (i = 0; i < 2; i++) {
+				expect(getWidget(i).type).toEqual("button");
+			}
+		});
+		
+		it("should define initial attributes", function() {
+			screen("screen 1", function() {
+				button({});
+			});
+			
+			expect(getWidget(0)).attributesToBeDefined(["id", "text", "style", "type"]);
+		});
+		
+		it("should be possible to style", function() {
+			screen("screen 1", function() {
+				button({ text: "hello", style: { color: "red" }})
+			});
+			
+			expect(getWidget(0).style).toBeDefined();
+			expect(getWidget(0).style).toEqual({ color: "red" });
+		});
+		
+		xit("id should be generated based on text, if not specified (convetion)", function() {
+			screen("screen 1", function() {
+				button("Login");
+				button({ text: "Click me" });
+				button("&#$&$%$%//&((&#yo123))");
+			});
+			
+			expect(getWidget(0).id).toEqual("btnLogin");
+			expect(getWidget(1).id).toEqual("btnClickme")
+			expect(getWidget(2).id).toEqual("yo123");
+		});
 	});
 });
