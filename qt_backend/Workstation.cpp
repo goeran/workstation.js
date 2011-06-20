@@ -23,3 +23,10 @@ unsigned int Workstation::getNScreens() const
 {
   return screens.size();
 }
+
+void Workstation::run() 
+{
+  // Resize to show the contents
+  if (getNScreens() > 0u)
+    resize(screens[0]->sizeHint());
+}

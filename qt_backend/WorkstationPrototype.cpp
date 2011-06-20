@@ -38,5 +38,6 @@ QScriptValue WorkstationPrototype::lastScreen()
 
 void WorkstationPrototype::run()
 {
-  qDebug("Run called");
+  Workstation *item = qscriptvalue_cast<Workstation*>(thisObject());
+  item->run();
 }

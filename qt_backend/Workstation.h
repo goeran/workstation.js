@@ -16,6 +16,7 @@ class Workstation : public QWidget
   void addScreen(const QString& title);
   Screen* getScreen(unsigned int index);
   unsigned int getNScreens() const;
+  void run();
 
  private:
   QVector<Screen*> screens;
