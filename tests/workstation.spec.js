@@ -23,8 +23,14 @@ describe("abstract syntax tree", function() {
 				label("my label");
 			});
 			
-			expect(getWidget(-1)).toThrow("Index out of range.");
-			expect(getWidget(100)).toThrow("Index out of range.");
+			var getWidgetFunc = function(index) {
+				return function() {
+					workstation.ast().lastScreen().getWidget(index);
+				}
+			}  
+			
+			expect(getWidgetFunc(-1)).toThrow("Index out of range.");
+			expect(getWidgetFunc(100)).toThrow("Index out of range.");
 		});
 	});
 	
@@ -42,11 +48,25 @@ describe("abstract syntax tree", function() {
 		});
 	});
 	
-	function getWidget(index) {
-		return function() {
-			workstation.ast().lastScreen().getWidget(index);
-		}
-	}  
+	describe("runtime behaviour", function() {
+		$([
+			"label",
+			"textbox",
+			"button"
+		]).each(function() {
+			it("should contain runtime behaviour for " + this, function() {
+				var args = { text: "hello" }; 
+				removeAllScreens();
+				screen("screen 1", function() {
+					workstation.ast().lastScreen().addWidget(args, this);	
+				});
+				
+				expect(getWidget(0).runtime).toBeDefined();
+				expect(getWidget(0).runtime.text).toThrow("not implemented");
+				expect(getWidget(0).runtime.click).toThrow("not implemented");
+			});
+		});
+	});
 });
 
 describe("keywords", function() {
@@ -68,18 +88,6 @@ describe("keywords", function() {
 			}	
 		});
 	});
-	
-	function getScreen(index) {
-		return workstation.ast().getScreen(index);
-	}
-	
-	function lastScreen() {
-		return workstation.ast().lastScreen();
-	}
-	
-	function getWidget(index) {
-		return lastScreen().getWidget(index);
-	}
 	
 	describe("app", function() {
 		it("should invoke runtime", function() {
@@ -115,37 +123,38 @@ describe("keywords", function() {
 	});
 	
 	describe("label", function() {
-		it("should append to the last screen in the AST", function() {
+		beforeEach(function() {
 			screen("screen 1", function() {
 				label("hello world");
 			});
-			
+		});
+		
+		it("should append to the last screen in the AST", function() {
 			expect(getScreen(0).numberOfWidgets()).toEqual(1);
 			expect(getScreen(0).getWidget(0).type).toEqual("label");
 		});
+
+		it("should set properties", function() {
+			expect(getWidget(0).type).toEqual("label");
+			expect(getWidget(0).text).toEqual("hello world");
+			expect(getWidget(0).style).toBeDefined();
+		});
 		
 		it("should define initial attributes", function() {
+			removeAllScreens();
 			screen("screen 1", function() {
 				label({});
 			});
 			expect(getWidget(0)).attributesToBeDefined(["id", "text", "style", "type"]);
 		});
 
-		it("should set properties", function() {
-			screen("screen 1", function() {
-				label("hello world");
-				
-				expect(getWidget(0).type).toEqual("label");
-				expect(getWidget(0).text).toEqual("hello world");
-				expect(getWidget(0).style).toBeDefined();
-			});	
-		});
-		
 		it("should not be possible to call if screen keyword is used first", function() {
+			removeAllScreens();
 			expect(label).toThrow("screen must be defined before label can be added");
 		});		
 		
 		it("should be possible to pass in several args", function() {
+			removeAllScreens();
 			screen("screen 1", function() {
 				label({ id: "lblUsername", text: "Username" });
 			});
@@ -155,6 +164,7 @@ describe("keywords", function() {
 		});
 		
 		it("should be possible to use string arg convention", function() {
+			removeAllScreens();
 			screen("screen 1", function() {
 				label("test");
 			});
@@ -171,16 +181,14 @@ describe("keywords", function() {
 			screen("screen 1", function() {
 				textbox({ id: "Username" });
 				textbox();
-				textbox({ onclick: function() {
-				}});
 				textbox({ style: { color: "red" } })
 			});
 			
-			expect(lastScreen().numberOfWidgets()).toEqual(4);
+			expect(lastScreen().numberOfWidgets()).toEqual(3);
 			expect(getWidget(0).id).toEqual("Username");
-			expect(getWidget(3).style).toEqual({ color: "red" });
+			expect(getWidget(2).style).toEqual({ color: "red" });
 			
-			for (i = 0; i < 3; i++) {
+			for (i = 0; i < 2; i++) {
 				expect(getWidget(i).type).toEqual("textbox");
 			}
 		});
@@ -240,5 +248,36 @@ describe("keywords", function() {
 			expect(getWidget(1).id).toEqual("btnClickme")
 			expect(getWidget(2).id).toEqual("yo123");
 		});
+		
+		it("should be possible to add code block for onclick", function() {
+			var onClickInvoked = false;
+			screen("screen 1", function() {
+				button({ text: "test", onclick: function() {
+					onClickInvoked = true;
+				} });
+			});
+			
+			expect(getWidget(0).onclick).toBeDefined();
+			
+			getWidget(0).onclick();
+			expect(onClickInvoked).toEqual(true);
+		});
 	});
 });
+
+function getScreen(index) {
+	return workstation.ast().getScreen(index);
+}
+
+function lastScreen() {
+	return workstation.ast().lastScreen();
+}
+
+function getWidget(index) {
+	return lastScreen().getWidget(index);
+}
+
+function removeAllScreens()
+{
+	workstation.ast().clear();
+}
