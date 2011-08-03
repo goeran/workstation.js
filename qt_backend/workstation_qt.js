@@ -17,7 +17,7 @@ workstation.runtime = {
 		    print("Textbox Text: Not implemented yet!");
 		}
 	    } else if (widget.type === "button") {
-		print("ADDING BUTTON IS NOT IMPLEMENTED");
+		lastScreen.addWidget("button", "Click me", widget.style);
 	    }
 	});
     }

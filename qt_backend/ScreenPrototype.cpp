@@ -26,6 +26,9 @@ void ScreenPrototype::addWidget(const QString& type,
   else if (type == QString("textbox")) {
     item->addTextEdit(text);
   }
+  else if (type == QString("button")) {
+    item->addButton(text);
+  }
   else {
     qDebug("Unknown widget: %s", type.toStdString().c_str());
   }

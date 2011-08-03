@@ -3,6 +3,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QVBoxLayout>
+#include <QPushButton>
 
 Screen::Screen(QWidget* parent, const QString& title) 
   : QWidget(parent)
@@ -19,4 +20,9 @@ void Screen::addLabel(const QString& title)
 void Screen::addTextEdit(const QString& defaultText) 
 {
   layout()->addWidget(new QLineEdit(defaultText, this));
+}
+
+void Screen::addButton(const QString& buttonText)
+{
+  layout()->addWidget(new QPushButton(buttonText, this));
 }

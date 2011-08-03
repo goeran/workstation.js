@@ -13,6 +13,7 @@ class Screen : public QWidget
   
   void addLabel(const QString& title);
   void addTextEdit(const QString& defaultText);
+  void addButton(const QString& buttonText);
 };
 
 #endif
