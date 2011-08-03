@@ -2,23 +2,27 @@
   "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <title>Jasmine Test Runner</title>
-  <link rel="stylesheet" type="text/css" href="jasmine-1.0.2/lib/jasmine-1.0.2/jasmine.css">
-  <script type="text/javascript" src="jasmine-1.0.2/lib/jasmine-1.0.2/jasmine.js"></script>
-  <script type="text/javascript" src="jasmine-1.0.2/lib/jasmine-1.0.2/jasmine-html.js"></script>
+ 	<title>Jasmine Test Runner</title>
+  	<link rel="stylesheet" type="text/css" href="jasmine-1.0.2/lib/jasmine-1.0.2/jasmine.css">
+  	<script type="text/javascript" src="jasmine-1.0.2/lib/jasmine-1.0.2/jasmine.js"></script>
+  	<script type="text/javascript" src="jasmine-1.0.2/lib/jasmine-1.0.2/jasmine-html.js"></script>
+  	<script src="../lib/jquery-1.6.1.min.js"></script>
 
-  <!-- include source files here... -->
-	<script src="../lib/workstation.js"></script>	
-	
-  <!-- include spec files here... -->
+  	<!-- include source files here... -->
+	<script src="../lib/workstation.js"></script>
+	<script src="testlib.js"></script>	
+
+  	<!-- include spec files here... -->
 	<script src="workstation.spec.js"></script>
+	<script src="workstation.ast.spec.js"></script>
+	<script src="workstation.dsl.spec.js">g</script>
 
 </head>
 <body>
 
 <script type="text/javascript">
-  jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
-  jasmine.getEnv().execute();
+	jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+  	jasmine.getEnv().execute();
 </script>
 
 </body>
