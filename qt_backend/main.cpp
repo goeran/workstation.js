@@ -26,16 +26,25 @@ int main(int argc, char **argv)
 
   // Add a workstation object to the script engine's global object
   Workstation workstation;
-  engine.globalObject().setProperty("workstation", 
+  engine.globalObject().setProperty("workstationQt", 
 				    engine.newQObject(&workstation));
 
-  QFile file("./playground.js");
-  file.open(QIODevice::ReadOnly);
-  QScriptValue result = engine.evaluate(file.readAll());
-  file.close();
-  if (engine.hasUncaughtException()) {
-    int lineNo = engine.uncaughtExceptionLineNumber();
-    qWarning() << "Line" << lineNo << ":" << result.toString();
+
+  QStringList files;
+  files << "../lib/workstation.js"
+	<< "./workstation_qt.js" 
+	<< "./playground.js";
+
+  foreach (const QString& fileName, files) {
+    qDebug() << fileName;
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
+    QScriptValue result = engine.evaluate(file.readAll());
+    file.close();
+    if (engine.hasUncaughtException()) {
+      int lineNo = engine.uncaughtExceptionLineNumber();
+      qWarning() << "Error in file: " << fileName << " Line" << lineNo << ":" << result.toString();
+    }
   }
 
   workstation.show();
