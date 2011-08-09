@@ -47,6 +47,7 @@ int main(int argc, char **argv)
     }
   }
 
+  workstation.run();
   workstation.show();
   return application.exec();
 }

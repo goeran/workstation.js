@@ -12,17 +12,23 @@ Screen::Screen(QWidget* parent, const QString& title)
   setLayout(layout);
 }
 
-void Screen::addLabel(const QString& title) 
+QWidget* Screen::addLabel(const QString& title) 
 {
-  layout()->addWidget(new QLabel(title, this));
+  QLabel* label = new QLabel(title, this);
+  layout()->addWidget(label);
+  return label;
 }
 
-void Screen::addTextEdit(const QString& defaultText) 
+QWidget* Screen::addTextEdit(const QString& defaultText) 
 {
-  layout()->addWidget(new QLineEdit(defaultText, this));
+  QLineEdit* lineEdit = new QLineEdit(defaultText, this);
+  layout()->addWidget(lineEdit);
+  return lineEdit;
 }
 
-void Screen::addButton(const QString& buttonText)
+QWidget* Screen::addButton(const QString& buttonText)
 {
-  layout()->addWidget(new QPushButton(buttonText, this));
+  QPushButton* pushButton = new QPushButton(buttonText, this); 
+  layout()->addWidget(pushButton);
+  return pushButton;
 }

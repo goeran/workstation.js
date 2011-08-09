@@ -4,6 +4,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QVariantMap>
 #include <QtScript/QScriptable>
+#include <QtScript/QScriptValue>
 
 class ScreenPrototype : public QObject, public QScriptable
 {
@@ -13,8 +14,8 @@ class ScreenPrototype : public QObject, public QScriptable
   ~ScreenPrototype();
 
   public slots:
-  void addWidget(const QString& type, const QString& text, 
-		 const QVariantMap& style);
+  QScriptValue addWidget(const QString& type, const QString& text, 
+			 const QVariantMap& style);
 
 };
 

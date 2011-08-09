@@ -1,23 +1,34 @@
 workstation.runtime = {
     run: function() {
-	print("RUN CALLED");
-
 	var currentScreen = workstation.ast();
 	// TODO: fix this 
 	workstationQt.addScreen("dummy title");
 	var lastScreen = workstationQt.lastScreen();
 	currentScreen.eachWidget(function(widget) {
 	    if (widget.type === "label") {
-		print("ADDING LABEL");
-		lastScreen.addWidget("label", "test", widget.style);
-	    } else if (widget.type === "textbox") {
-		print("ADDING TEXTBOX");
-		lastScreen.addWidget("textbox", "text", widget.style);
+		var label = lastScreen.addWidget("label", "test", widget.style);
+		label.text = widget.text;
+	    } 
+	    else if (widget.type === "textbox") {
+		var textbox = lastScreen.addWidget("textbox", "text", widget.style);
+		textbox.text = widget.text;
 		widget.runtime.text = function(text) {
-		    print("Textbox Text: Not implemented yet!");
+		    textbox.text = text;
 		}
-	    } else if (widget.type === "button") {
-		lastScreen.addWidget("button", "Click me", widget.style);
+	    }
+	    else if (widget.type === "button") {
+		var button = lastScreen.addWidget("button", "Click me", widget.style);
+		button.text = widget.text;
+		if (widget.onclick) {
+		    button.clicked.connect(function() {
+			// TODO: implied global variable
+			that = {};
+			currentScreen.eachWidget(function(w) {
+			    that[w.id] = w;
+			});
+			widget.onclick();
+		    });
+		}
 	    }
 	});
     }
