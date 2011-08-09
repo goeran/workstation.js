@@ -17,6 +17,18 @@ QScriptValue QPoint_ctor(QScriptContext *context, QScriptEngine *engine)
   return engine->toScriptValue(QPoint(x, y));
 }
 
+QScriptValue alert(QScriptContext* context, QScriptEngine*)
+{
+  QScriptValue arg = context->argument(0);
+  if (!arg.isString()) {
+    return context->throwError(QScriptContext::TypeError,
+			       "alert(): expected string argument");
+  }
+  QString message = arg.toString();
+  QMessageBox::information(0, "Alert", message);
+  return QScriptValue();
+}
+
 
 int main(int argc, char **argv) 
 {
@@ -36,6 +48,8 @@ int main(int argc, char **argv)
   // Make the constructor for QPoint accessible from the script.
   // See http://doc.trolltech.com/4.5/qtscript.html#implementing-constructors-for-value-based-types
   engine.globalObject().setProperty("QPoint", engine.newFunction(QPoint_ctor));
+
+  engine.globalObject().setProperty("alert", engine.newFunction(alert));
 
   // Add a workstation object to the script engine's global object
   Workstation workstation;
