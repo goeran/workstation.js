@@ -24,8 +24,15 @@ QScriptValue alert(QScriptContext* context, QScriptEngine*)
     return context->throwError(QScriptContext::TypeError,
 			       "alert(): expected string argument");
   }
+
+  // Get the top level widget to use as parent to center the message box.
+  QWidget* widget = 0;
+  QWidgetList widgets = QApplication::topLevelWidgets();
+  if (widgets.size() == 1)
+    widget = widgets[0];
+
   QString message = arg.toString();
-  QMessageBox::information(0, "Alert", message);
+  QMessageBox::information(widget, "Alert", message);
   return QScriptValue();
 }
 
