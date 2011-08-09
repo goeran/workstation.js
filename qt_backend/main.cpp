@@ -70,14 +70,15 @@ int main(int argc, char **argv)
 	<< "./playground.js";
 
   foreach (const QString& fileName, files) {
-    qDebug() << fileName;
+    qDebug() << "Reading javascript from: " << fileName;
     QFile file(fileName);
     file.open(QIODevice::ReadOnly);
     QScriptValue result = engine.evaluate(file.readAll());
     file.close();
     if (engine.hasUncaughtException()) {
       int lineNo = engine.uncaughtExceptionLineNumber();
-      qWarning() << "Error in file: " << fileName << " Line" << lineNo << ":" << result.toString();
+      qWarning() << "Error in file: " << fileName 
+		 << " Line" << lineNo << ":" << result.toString();
     }
   }
 
