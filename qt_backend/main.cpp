@@ -10,12 +10,12 @@ Q_DECLARE_METATYPE(Workstation*)
 Q_DECLARE_METATYPE(Screen*)
 
 // Constructor for QPoint (used to move the widget)
- QScriptValue QPoint_ctor(QScriptContext *context, QScriptEngine *engine)
- {
-   int x = context->argument(0).toInt32();
-   int y = context->argument(1).toInt32();
-   return engine->toScriptValue(QPoint(x, y));
- }
+QScriptValue QPoint_ctor(QScriptContext *context, QScriptEngine *engine)
+{
+  int x = context->argument(0).toInt32();
+  int y = context->argument(1).toInt32();
+  return engine->toScriptValue(QPoint(x, y));
+}
 
 
 int main(int argc, char **argv) 
