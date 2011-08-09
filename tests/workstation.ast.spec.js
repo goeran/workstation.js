@@ -1,4 +1,8 @@
 describe("abstract syntax tree", function() {
+	beforeEach(function() {
+		workstation.reset();
+	});
+		
 	describe("add", function() {
 		it("should only be possible to add widgets of type screen as root nodes", function() {
 			var expectedErrorMsg = "Only screens can be added as root nodes.";
@@ -68,7 +72,7 @@ describe("abstract syntax tree", function() {
 		});
 
 		describe("lastWidget", function() {
-			it("should return instance of widghet", function() {
+			it("should return instance of widget", function() {
 				screen("screen 1", function() {
 					button("hello");
 				});
@@ -112,4 +116,3 @@ describe("abstract syntax tree", function() {
 		});
 	});
 });
-

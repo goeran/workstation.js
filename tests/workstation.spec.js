@@ -1,4 +1,7 @@
 describe("script", function() {
+	beforeEach(function() {
+		workstation.reset();
+	});
 	it("should have a global variable called workstation", function() {
 		expect(workstation).toBeDefined();
 	});	
@@ -13,6 +16,9 @@ describe("script", function() {
 });
 
 describe("util", function() {
+	beforeEach(function() {
+		workstation.reset();
+	});
 	describe("newWidget", function() {
 		it("should guard args", function() {
 			expect(function() {	
