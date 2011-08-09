@@ -15,20 +15,18 @@ ScreenPrototype::~ScreenPrototype()
 {
 }
 
-QScriptValue ScreenPrototype::addWidget(const QString& type,
-					const QString& text, 
-					const QVariantMap& values)
+QScriptValue ScreenPrototype::addWidget(const QString& type)
 {
   Screen *item = qscriptvalue_cast<Screen*>(thisObject());
   QWidget* widget = 0;
   if (type == QString("label")) {
-    widget = item->addLabel(text);
+    widget = item->addLabel();
   }
   else if (type == QString("textbox")) {
-    widget = item->addTextEdit(text);
+    widget = item->addTextEdit();
   }
   else if (type == QString("button")) {
-    widget = item->addButton(text);
+    widget = item->addButton();
   }
   else {
     qDebug("Unknown widget: %s", type.toStdString().c_str());

@@ -9,20 +9,20 @@ Screen::Screen(QWidget* parent, const QString& title)
 {
 }
 
-QWidget* Screen::addLabel(const QString& title) 
+QWidget* Screen::addLabel()
 {
-  QLabel* label = new QLabel(title, this);
+  QLabel* label = new QLabel("", this);
   return label;
 }
 
-QWidget* Screen::addTextEdit(const QString& defaultText) 
+QWidget* Screen::addTextEdit()
 {
-  QLineEdit* lineEdit = new QLineEdit(defaultText, this);
+  QLineEdit* lineEdit = new QLineEdit("", this);
   return lineEdit;
 }
 
-QWidget* Screen::addButton(const QString& buttonText)
+QWidget* Screen::addButton()
 {
-  QPushButton* pushButton = new QPushButton(buttonText, this); 
+  QPushButton* pushButton = new QPushButton("", this); 
   return pushButton;
 }

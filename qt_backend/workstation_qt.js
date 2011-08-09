@@ -10,12 +10,12 @@ workstation.runtime = {
 	var lastScreen = workstationQt.lastScreen();
 	currentScreen.eachWidget(function(widget) {
 	    if (widget.type === "label") {
-		var label = lastScreen.addWidget("label", "test", widget.style);
+		var label = lastScreen.addWidget("label");
 		label.text = widget.text;
 		setPosition(label, widget.style);
 	    } 
 	    else if (widget.type === "textbox") {
-		var textbox = lastScreen.addWidget("textbox", "text", widget.style);
+		var textbox = lastScreen.addWidget("textbox");
 		textbox.text = widget.text;
 		widget.runtime.text = function(text) {
 		    textbox.text = text;
@@ -23,7 +23,7 @@ workstation.runtime = {
 		setPosition(textbox, widget.style);
 	    }
 	    else if (widget.type === "button") {
-		var button = lastScreen.addWidget("button", "Click me", widget.style);
+		var button = lastScreen.addWidget("button");
 		button.text = widget.text;
 		if (widget.onclick) {
 		    button.clicked.connect(function() {

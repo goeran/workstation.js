@@ -11,9 +11,9 @@ class Screen : public QWidget
   Screen(QWidget* parent, const QString& title);
   ~Screen() {};
   
-  QWidget* addLabel(const QString& title);
-  QWidget* addTextEdit(const QString& defaultText);
-  QWidget* addButton(const QString& buttonText);
+  QWidget* addLabel();
+  QWidget* addTextEdit();
+  QWidget* addButton();
 };
 
 #endif
