@@ -1,5 +1,6 @@
 describe("keywords", function() {
 	beforeEach(function() {
+		workstation.reset();
 		this.addMatchers({
 			attributesToBeDefined: function(attributes) {
 				var matches = [];
@@ -54,24 +55,26 @@ describe("keywords", function() {
 			
 			expect(workstation.ast().text).toEqual("root");
 			expect(workstation.ast().numberOfWidgets()).toEqual(2);
-			expect(workstation.ast().getWidget(0).title).toEqual("child 1");
-			expect(workstation.ast().getWidget(1).title).toEqual("child 2");
+			expect(workstation.ast().getWidget(0).text).toEqual("child 1");
+			expect(workstation.ast().getWidget(1).text).toEqual("child 2");
 		});
+
+
 	});
 	
 	describe("label", function() {
-		beforeEach(function() {
+		it("should append to the AST root", function() {
 			screen("screen 1", function() {
 				label("hello world");
 			});
-		});
-		
-		it("should append to the AST root", function() {
 			expect(getRootScreen().numberOfWidgets()).toEqual(1);
 			expect(getRootScreen().getWidget(0).type).toEqual("label");
 		});
 
 		it("should set properties", function() {
+			screen("screen 1", function() {
+				label("hello world");
+			});
 			expect(getWidget(0).type).toEqual("label");
 			expect(getWidget(0).text).toEqual("hello world");
 			expect(getWidget(0).style).toBeDefined();
@@ -226,25 +229,28 @@ describe("keywords", function() {
 		});
 	});
 	
+	
 	describe("row", function() {
 		it("should append to the last added table", function() {
 			screen("screen 1", function() {
 				table("Menu", function() {
 					row("Help");
 				});
-				screen("child screen", function() {
+				//screen("child screen", function() {
 					table("Options", function() {
 						row("Yes");
 						row("No");
 						row("Don't know");
 					});
-				});
+				//});
 			});
 			
 			var firstTable = workstation.ast().getWidget(0);
 			var secondTable = workstation.ast().getWidget(1);
 			expect(firstTable.numberOfWidgets()).toEqual(1);
+			expect(firstTable.type).toEqual("table");
 			expect(firstTable.getWidget(0).type).toEqual("row");
+			expect(secondTable.type).toEqual("table");
 			expect(secondTable.numberOfWidgets()).toEqual(3);
 			for (var i = 0; i < 3; i++) {
 				expect(secondTable.getWidget(i).type).toEqual("row");
