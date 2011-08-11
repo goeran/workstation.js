@@ -134,6 +134,32 @@ describe("keywords", function() {
 		});
 	});
 	
+	describe("passwordfield", function() {
+		it("should be appended to AST root", function() {
+			screen("screen 1", function() {
+				passwordfield({ id: "Password" });
+				passwordfield();
+				passwordfield({ style: { color: "red" } })
+			});
+			
+			expect(lastScreen().numberOfWidgets()).toEqual(3);
+			expect(getWidget(0).id).toEqual("Password");
+			expect(getWidget(2).style).toEqual({ color: "red" });
+			
+			for (i = 0; i < 2; i++) {
+				expect(getWidget(i).type).toEqual("passwordfield");
+			}
+		});
+		
+		it("should define initial attributes", function() {
+			screen("screen 1", function() {
+				passwordfield({});
+			});
+			
+			expect(getWidget(0)).attributesToBeDefined(["id", "text", "style", "type"]);
+		});
+	});
+	
 	describe("button", function() {
 		it("should be appended to AST root", function() {
 			screen("screen 1", function() {
