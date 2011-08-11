@@ -28,8 +28,8 @@ describe("abstract syntax tree", function() {
 		it("should be possible to have sub screens", function() {
 			workstation.ast({ type: "screen", style: {} });
 			var root = workstation.ast();
-			root.addWidget({ type: "screen", style: {} });
-
+			root.addWidget("screen", { style: {} });
+			
 			expect(root.numberOfWidgets()).toEqual(1);
 			expect(root.getWidget(0).type).toEqual("screen"); 
 		});
@@ -88,7 +88,7 @@ describe("abstract syntax tree", function() {
 				}).toThrow(errorMsg);
 	
 				screen("root 2", function() {
-					workstation.ast().addWidget({ type: "screen", style: {} });
+					workstation.ast().addWidget("screen", { style: {} });
 				});
 				expect(function() {
 					var a = workstation.ast().lastWidget().lastWidget();
@@ -104,9 +104,9 @@ describe("abstract syntax tree", function() {
 			"button"
 		]).each(function() {
 			it("should contain runtime behaviour for " + this, function() {
-				var args = { text: "hello", type: this, style: {} }; 
+				var args = { text: "hello", style: {} }; 
 				screen("screen 1", function() {
-					workstation.ast().addWidget(args);	
+					workstation.ast().addWidget(this, args);	
 				});
 				
 				expect(getWidget(0).runtime).toBeDefined();
