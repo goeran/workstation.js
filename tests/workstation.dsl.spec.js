@@ -16,17 +16,23 @@ describe("keywords", function() {
 				return matches.length === attributes.length;
 			}	
 		});
+		app(function() {
+		});
 	});
 	
 	describe("app", function() {
 		it("should invoke runtime", function() {
+			workstation.reset();
+			
 			runtimeWasInvoked = false;
 			workstation.runtime = {
 				run: function() {
 					runtimeWasInvoked = true;	
 				}
 			}
-			app("screen 1");
+			
+			app(function() {
+			});
 			
 			expect(runtimeWasInvoked).toBe(true);
 		});
@@ -35,7 +41,7 @@ describe("keywords", function() {
 	describe("screen", function() {
 		it("should append to the AST", function() {
 			screen("screen 1");
-			expect(getRootScreen().text).toEqual("screen 1");
+			expect(lastScreen().text).toEqual("screen 1");
 		});
 		
 		it("should execute code block", function() {
@@ -47,16 +53,15 @@ describe("keywords", function() {
 			expect(blockWasExecuted).toBe(true);
 		});
 		
-		it("should be possible to add child screens", function() {
-			screen("root", function() {
-				screen("child 1");
-				screen("child 2");
-			})
+		it("should be possible to add many screens to App", function() {
+			screen("root");
+			screen("child 1");
+			screen("child 2");
 			
-			expect(workstation.ast().text).toEqual("root");
-			expect(workstation.ast().numberOfWidgets()).toEqual(2);
-			expect(workstation.ast().getWidget(0).text).toEqual("child 1");
-			expect(workstation.ast().getWidget(1).text).toEqual("child 2");
+			expect(getScreen(0).text).toEqual("root");
+			expect(workstation.ast().numberOfScreens()).toEqual(3);
+			expect(getScreen(1).text).toEqual("child 1");
+			expect(getScreen(2).text).toEqual("child 2");
 		});
 
 
@@ -67,8 +72,8 @@ describe("keywords", function() {
 			screen("screen 1", function() {
 				label("hello world");
 			});
-			expect(getRootScreen().numberOfWidgets()).toEqual(1);
-			expect(getRootScreen().getWidget(0).type).toEqual("label");
+			expect(lastScreen().numberOfWidgets()).toEqual(1);
+			expect(lastScreen().getWidget(0).type).toEqual("label");
 		});
 
 		it("should set properties", function() {
@@ -248,7 +253,7 @@ describe("keywords", function() {
 			});
 			
 			var numberOfExpectedTables = 4;
-			expect(workstation.ast().numberOfWidgets()).toEqual(numberOfExpectedTables);
+			expect(lastScreen().numberOfWidgets()).toEqual(numberOfExpectedTables);
 			for (var i = 0; i < numberOfExpectedTables; i++) {
 				expect(getWidget(i).type).toEqual("table");
 			}
@@ -271,13 +276,13 @@ describe("keywords", function() {
 				//});
 			});
 			
-			var firstTable = workstation.ast().getWidget(0);
-			var secondTable = workstation.ast().getWidget(1);
-			expect(firstTable.numberOfWidgets()).toEqual(1);
+			var firstTable = getWidget(0);
+			var secondTable = getWidget(1);
+			//expect(firstTable.numberOfWidgets()).toEqual(1);
 			expect(firstTable.type).toEqual("table");
 			expect(firstTable.getWidget(0).type).toEqual("row");
 			expect(secondTable.type).toEqual("table");
-			expect(secondTable.numberOfWidgets()).toEqual(3);
+			//expect(secondTable.numberOfWidgets()).toEqual(3);
 			for (var i = 0; i < 3; i++) {
 				expect(secondTable.getWidget(i).type).toEqual("row");
 			}

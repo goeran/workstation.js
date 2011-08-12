@@ -4,46 +4,35 @@ describe("abstract syntax tree", function() {
 	});
 		
 	describe("add", function() {
-		it("should only be possible to add widgets of type screen as root nodes", function() {
-			var expectedErrorMsg = "Only screens can be added as root nodes.";
-			var label = workstation.factory.newLabel("hello");
-			
-			expect(function() {
-				workstation.ast(label);
-			}).toThrow(expectedErrorMsg);
-			
-			expect(function() {
-				workstation.ast({});
-			}).toThrow(expectedErrorMsg);
-		});
-		
 		it("should be possible to get root", function() {
-			var screenObj = workstation.factory.newScreen("win1");
-			workstation.ast(screenObj);
-			expect(workstation.ast().type).toEqual("screen");
+			workstation.ast("app1");
+			expect(workstation.ast().type).toEqual("app");
 		});
 	});
 	
 	describe("screens", function() {
-		it("should be possible to have sub screens", function() {
-			workstation.ast({ type: "screen", style: {} });
+		it("should be impossible to add sub screens", function() {
+			workstation.ast("app1");
 			var root = workstation.ast();
-			root.addWidget("screen", { style: {} });
+			var screen1 = root.addScreen("my title");
+			expect(function() {
+				screen1.addWidget("screen", {});
+			}).toThrow("Unable to add screen to screen.");
 			
-			expect(root.numberOfWidgets()).toEqual(1);
-			expect(root.getWidget(0).type).toEqual("screen"); 
 		});
 	});
 	
 	describe("widgets", function() {
 		it("should throw exception when index is out of range", function() {
-			screen("screen 1", function() {
-				label("my label");
+			app(function() {
+				screen("screen 1", function() {
+					label("my label");
+				});
 			});
 			
 			var getWidgetFunc = function(index) {
 				return function() {
-					workstation.ast().getWidget(index);
+					lastScreen().getWidget(index);
 				}
 			}  
 			
@@ -52,16 +41,18 @@ describe("abstract syntax tree", function() {
 		});
 		
 		it("should have an enumerator method", function() {
-			screen("screen 1", function() {
-				label("hello world");
-				button("test");
+			app(function() {
+				screen("screen 1", function() {
+					label("hello world");
+					button("test");
+				});
 			});
 			
 			var enumCodeBlockInvoked = 0;
-			var rootScreen = workstation.ast();
+			var aScreen = lastScreen();
 			var widgets = [];
 			
-			rootScreen.eachWidget(function(widget) {
+			aScreen.eachWidget(function(widget) {
 				enumCodeBlockInvoked++;
 				widgets.push(widget);
 			});			
@@ -73,25 +64,30 @@ describe("abstract syntax tree", function() {
 
 		describe("lastWidget", function() {
 			it("should return instance of widget", function() {
-				screen("screen 1", function() {
-					button("hello");
+				app(function() {
+					console.log("appz")
+					screen("screen 1", function() {
+						button("hello");
+					});
 				});
-				
-				expect(workstation.ast().lastWidget().type).toEqual("button");
+				console.log(workstation.ast());
+				expect(lastWidget().type).toEqual("button");
 			});
 			
 			it("should throw exception if it doesn't have any child widgets", function() {
 				var errorMsg = "Widget doesn't have any child widgets";
-				screen("screen 1");
+				app(function() {
+					screen("screen 1");
+				});
+				
 				expect(function() {
-					var a = workstation.ast().lastWidget();
+					var a = lastWidget();
 				}).toThrow(errorMsg);
 	
-				screen("root 2", function() {
-					workstation.ast().addWidget("screen", { style: {} });
-				});
+				lastScreen().addWidget("label", { style: {} });
+
 				expect(function() {
-					var a = workstation.ast().lastWidget().lastWidget();
+					var a = lastWidget().lastWidget();
 				}).toThrow(errorMsg);
 			});
 		});		
@@ -105,8 +101,10 @@ describe("abstract syntax tree", function() {
 		]).each(function() {
 			it("should contain runtime behaviour for " + this, function() {
 				var args = { text: "hello", style: {} }; 
-				screen("screen 1", function() {
-					workstation.ast().addWidget(this, args);	
+				app(function() {
+					screen("screen 1", function() {
+						lastScreen().addWidget(this, args);	
+					});
 				});
 				
 				expect(getWidget(0).runtime).toBeDefined();
@@ -116,3 +114,11 @@ describe("abstract syntax tree", function() {
 		});
 	});
 });
+
+function lastScreen() {
+	return workstation.ast().lastScreen();
+}
+
+function lastWidget() {
+	return lastScreen().lastWidget();
+}
