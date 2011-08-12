@@ -65,12 +65,10 @@ describe("abstract syntax tree", function() {
 		describe("lastWidget", function() {
 			it("should return instance of widget", function() {
 				app(function() {
-					console.log("appz")
 					screen("screen 1", function() {
 						button("hello");
 					});
 				});
-				console.log(workstation.ast());
 				expect(lastWidget().type).toEqual("button");
 			});
 			
@@ -114,11 +112,3 @@ describe("abstract syntax tree", function() {
 		});
 	});
 });
-
-function lastScreen() {
-	return workstation.ast().lastScreen();
-}
-
-function lastWidget() {
-	return lastScreen().lastWidget();
-}
