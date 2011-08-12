@@ -6,7 +6,7 @@ describe("abstract syntax tree", function() {
 	describe("add", function() {
 		it("should only be possible to add widgets of type screen as root nodes", function() {
 			var expectedErrorMsg = "Only screens can be added as root nodes.";
-			var label = workstation.factories.newWidget({ text: "hello", type: "label", style: {} });
+			var label = workstation.factory.newLabel("hello");
 			
 			expect(function() {
 				workstation.ast(label);
@@ -18,7 +18,7 @@ describe("abstract syntax tree", function() {
 		});
 		
 		it("should be possible to get root", function() {
-			var screenObj = workstation.factories.newWidget({ text: "win1", type: "screen", style: {} });
+			var screenObj = workstation.factory.newScreen("win1");
 			workstation.ast(screenObj);
 			expect(workstation.ast().type).toEqual("screen");
 		});
