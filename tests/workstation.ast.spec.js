@@ -1,20 +1,18 @@
 describe("abstract syntax tree", function() {
+	var root, screen1;
 	beforeEach(function() {
-		workstation.reset();
+		root = workstation.ast("");
+		screen1 = root.addScreen("screen 1");
 	});
 		
 	describe("add", function() {
 		it("should be possible to get root", function() {
-			workstation.ast("app1");
 			expect(workstation.ast().type).toEqual("app");
 		});
 	});
 	
 	describe("screens", function() {
 		it("should be impossible to add sub screens", function() {
-			workstation.ast("app1");
-			var root = workstation.ast();
-			var screen1 = root.addScreen("my title");
 			expect(function() {
 				screen1.addWidget("screen", {});
 			}).toThrow("Unable to add screen to screen.");
@@ -24,29 +22,22 @@ describe("abstract syntax tree", function() {
 	
 	describe("widgets", function() {
 		it("should throw exception when index is out of range", function() {
-			app(function() {
-				screen("screen 1", function() {
-					label("my label");
-				});
-			});
-			
+			var label1 = screen1.addWidget("label", { title: "my label" });
+
 			var getWidgetFunc = function(index) {
 				return function() {
 					lastScreen().getWidget(index);
 				}
 			}  
 			
+			expect(getWidgetFunc(0).type === "label");
 			expect(getWidgetFunc(-1)).toThrow("Index out of range.");
 			expect(getWidgetFunc(100)).toThrow("Index out of range.");
 		});
 		
 		it("should have an enumerator method", function() {
-			app(function() {
-				screen("screen 1", function() {
-					label("hello world");
-					button("test");
-				});
-			});
+			screen1.addWidget("label", { title: "hello world" });
+			screen1.addWidget("button", { title: "test" });
 			
 			var enumCodeBlockInvoked = 0;
 			var aScreen = lastScreen();
@@ -64,25 +55,18 @@ describe("abstract syntax tree", function() {
 
 		describe("lastWidget", function() {
 			it("should return instance of widget", function() {
-				app(function() {
-					screen("screen 1", function() {
-						button("hello");
-					});
-				});
+				screen1.addWidget("button", { title: "hello" });
 				expect(lastWidget().type).toEqual("button");
 			});
 			
 			it("should throw exception if it doesn't have any child widgets", function() {
 				var errorMsg = "Widget doesn't have any child widgets";
-				app(function() {
-					screen("screen 1");
-				});
 				
 				expect(function() {
 					var a = lastWidget();
 				}).toThrow(errorMsg);
 	
-				lastScreen().addWidget("label", { style: {} });
+				screen1.addWidget("label", { style: {} });
 
 				expect(function() {
 					var a = lastWidget().lastWidget();
@@ -99,11 +83,7 @@ describe("abstract syntax tree", function() {
 		]).each(function() {
 			it("should contain runtime behaviour for " + this, function() {
 				var args = { text: "hello", style: {} }; 
-				app(function() {
-					screen("screen 1", function() {
-						lastScreen().addWidget(this, args);	
-					});
-				});
+				screen1.addWidget(this, args);	
 				
 				expect(getWidget(0).runtime).toBeDefined();
 				expect(getWidget(0).runtime.text).toThrow("not implemented");
