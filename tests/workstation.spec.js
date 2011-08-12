@@ -14,24 +14,3 @@ describe("script", function() {
 		expect(workstation.runtime).toBeDefined();
 	});
 });
-
-describe("util", function() {
-	beforeEach(function() {
-		workstation.reset();
-	});
-	describe("newWidget", function() {
-		it("should guard args", function() {
-			expect(function() {	
-				workstation.util.newWidget(null);				
-			}).toThrow("Args can't be null.");
-			
-			expect(function() {
-				workstation.util.newWidget({});
-			}).toThrow("Type not specified.")
-			
-			expect(function() {
-				workstation.util.newWidget({ type: "label" });
-			}).toThrow("Style not specified.");
-		});
-	});
-});
