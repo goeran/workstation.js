@@ -1,5 +1,8 @@
 describe("abstract syntax tree", function() {
-	var root, screen1;
+	var root, screen1, widgetFactory;
+
+	widgetFactory = workstation.factory;
+
 	beforeEach(function() {
 		root = workstation.ast("");
 		screen1 = root.addScreen("screen 1");
@@ -14,7 +17,7 @@ describe("abstract syntax tree", function() {
 	describe("screens", function() {
 		it("should be impossible to add sub screens", function() {
 			expect(function() {
-				screen1.addWidget("screen", {});
+				screen1.addWidget(widgetFactory.newScreen());
 			}).toThrow("Unable to add screen to screen.");
 			
 		});
@@ -22,7 +25,7 @@ describe("abstract syntax tree", function() {
 	
 	describe("widgets", function() {
 		it("should throw exception when index is out of range", function() {
-			var label1 = screen1.addWidget("label", { title: "my label" });
+			var label1 = screen1.addWidget(widgetFactory.newLabel("my label"));
 
 			var getWidgetFunc = function(index) {
 				return function() {
@@ -36,8 +39,8 @@ describe("abstract syntax tree", function() {
 		});
 		
 		it("should have an enumerator method", function() {
-			screen1.addWidget("label", { title: "hello world" });
-			screen1.addWidget("button", { title: "test" });
+			screen1.addWidget(widgetFactory.newLabel("hello world"));
+			screen1.addWidget(widgetFactory.newButton("test"));
 			
 			var enumCodeBlockInvoked = 0;
 			var aScreen = lastScreen();
@@ -55,7 +58,7 @@ describe("abstract syntax tree", function() {
 
 		describe("lastWidget", function() {
 			it("should return instance of widget", function() {
-				screen1.addWidget("button", { title: "hello" });
+				screen1.addWidget(widgetFactory.newButton());
 				expect(lastWidget().type).toEqual("button");
 			});
 			
@@ -66,7 +69,7 @@ describe("abstract syntax tree", function() {
 					var a = lastWidget();
 				}).toThrow(errorMsg);
 	
-				screen1.addWidget("label", { style: {} });
+				screen1.addWidget(widgetFactory.newLabel());
 
 				expect(function() {
 					var a = lastWidget().lastWidget();
@@ -76,18 +79,19 @@ describe("abstract syntax tree", function() {
 	});
 	
 	describe("runtime behaviour", function() {
-		$([
-			"label",
-			"textbox",
-			"button"
-		]).each(function() {
+		var widgets = [
+			widgetFactory.newLabel(),
+			widgetFactory.newTextBox(),
+			widgetFactory.newButton()
+		];
+		
+		$(widgets).each(function(index) {
 			it("should contain runtime behaviour for " + this, function() {
-				var args = { text: "hello", style: {} }; 
-				screen1.addWidget(this, args);	
+				screen1.addWidget(widgets[index]);
 				
-				expect(getWidget(0).runtime).toBeDefined();
-				expect(getWidget(0).runtime.text).toThrow("not implemented");
-				expect(getWidget(0).runtime.click).toThrow("not implemented");
+				expect(screen1.lastWidget().runtime).toBeDefined();
+				expect(screen1.lastWidget().runtime.text).toThrow("not implemented");
+				expect(screen1.lastWidget().runtime.click).toThrow("not implemented");
 			});
 		});
 	});
