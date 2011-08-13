@@ -5,7 +5,7 @@ describe("abstract syntax tree", function() {
 
 	beforeEach(function() {
 		root = workstation.ast("");
-		screen1 = root.addScreen("screen 1");
+		screen1 = root.addScreen(widgetFactory.newScreen("screen 1"));
 	});
 		
 	describe("add", function() {
@@ -19,13 +19,33 @@ describe("abstract syntax tree", function() {
 			var enumCodeBlockInvoked;
 			
 			enumCodeBlockInvoked = 0;
-			root.addScreen("screen 2");
+			root.addScreen(widgetFactory.newScreen("screen 2"));
 			
 			root.eachScreen(function(s) {
 				enumCodeBlockInvoked++;
 			});
 			
 			expect(enumCodeBlockInvoked).toEqual(2);
+		});
+
+		describe("add screens", function() {
+			var appObj;
+			
+			beforeEach(function() {
+				appObj = widgetFactory.newApp();
+			});
+			
+			it("should be possible to add screens", function() {
+				appObj.addScreen(widgetFactory.newScreen("new screen"));
+
+				expect(appObj.numberOfScreens()).toEqual(1);
+			});
+			
+			it("should only be possible to add screen objects", function() {
+				expect(function() {
+					appObj.addScreen("home");
+				}).toThrow("It's only possible to add widgets of type screen. Use factory to add them.")
+			});
 		});
 	});
 	
