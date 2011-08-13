@@ -64,7 +64,16 @@ describe("keywords", function() {
 			expect(getScreen(2).text).toEqual("child 2");
 		});
 
-
+		it("should be possible to use an arg object", function() {
+			var blockWasInvoked;
+			screen({ id: "home", text: "screen home" }, function() {
+				blockWasInvoked = true;
+			});
+			
+			expect(lastScreen().text).toEqual("screen home");
+			expect(lastScreen().id).toEqual("home");
+			expect(blockWasInvoked).toEqual(true);
+		});
 	});
 	
 	describe("label", function() {
