@@ -14,6 +14,21 @@ describe("abstract syntax tree", function() {
 		});
 	});
 	
+	describe("application", function() {
+		it("should have an enumerator method", function() {
+			var enumCodeBlockInvoked;
+			
+			enumCodeBlockInvoked = 0;
+			root.addScreen("screen 2");
+			
+			root.eachScreen(function(s) {
+				enumCodeBlockInvoked++;
+			});
+			
+			expect(enumCodeBlockInvoked).toEqual(2);
+		});
+	});
+	
 	describe("screens", function() {
 		it("should be impossible to add sub screens", function() {
 			expect(function() {
