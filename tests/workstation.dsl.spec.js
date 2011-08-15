@@ -1,6 +1,5 @@
 describe("keywords", function() {
 	beforeEach(function() {
-		workstation.reset();
 		this.addMatchers({
 			attributesToBeDefined: function(attributes) {
 				var matches = [];
@@ -23,8 +22,6 @@ describe("keywords", function() {
 	
 	describe("app", function() {
 		it("should invoke runtime", function() {
-			workstation.reset();
-			
 			runtimeWasInvoked = false;
 			workstation.runtime = {
 				run: function() {

@@ -4,9 +4,6 @@ describe("workstation", function() {
 	widgetFactory = workstation.factory;
 	
 	describe("script", function() {
-		beforeEach(function() {
-			workstation.reset();
-		});
 		it("should have a global variable called workstation", function() {
 			expect(workstation).toBeDefined();
 		});	
