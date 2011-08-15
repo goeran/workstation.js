@@ -16,6 +16,7 @@ describe("keywords", function() {
 				return matches.length === attributes.length;
 			}	
 		});
+		
 		app(function() {
 		});
 	});
@@ -73,6 +74,27 @@ describe("keywords", function() {
 			expect(lastScreen().text).toEqual("screen home");
 			expect(lastScreen().id).toEqual("home");
 			expect(blockWasInvoked).toEqual(true);
+		});
+		
+		it("should be possible to specify header", function() {
+			screen("screen 1", function() {
+				header(function() {
+					button("Back");
+					button("Home");
+				});
+			});
+			screen("screen 2", function() {
+				header(function() {
+					button("back");
+				});
+			});
+			
+			expect(getScreen(0).numberOfWidgets()).toEqual(1);
+			expect(getScreen(0).lastWidget().type).toEqual("header");
+			expect(getScreen(0).lastWidget().numberOfWidgets()).toEqual(2);
+			expect(getScreen(1).numberOfWidgets()).toEqual(1);
+			expect(getScreen(1).lastWidget().type).toEqual("header");
+			expect(getScreen(1).lastWidget().numberOfWidgets()).toEqual(1);
 		});
 	});
 	
@@ -276,15 +298,16 @@ describe("keywords", function() {
 				table("Menu", function() {
 					row("Help");
 				});
-				//screen("child screen", function() {
-					table("Options", function() {
-						row("Yes");
-						row("No");
-						row("Don't know");
-					});
-				//});
+				
+				table("Options", function() {
+					row("Yes");
+					row("No");
+					row("Don't know");
+				});
 			});
+
 			
+			expect(lastScreen().numberOfWidgets()).toEqual(2);
 			var firstTable = getWidget(0);
 			var secondTable = getWidget(1);
 			//expect(firstTable.numberOfWidgets()).toEqual(1);
@@ -296,5 +319,5 @@ describe("keywords", function() {
 				expect(secondTable.getWidget(i).type).toEqual("row");
 			}
 		});
-	});
+	});	
 });

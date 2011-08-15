@@ -60,5 +60,10 @@ describe("workstation", function() {
 			var newRow = widgetFactory.newRow();
 			expect(newRow.type).toEqual("row");
 		});
+		
+		it("should be possible to make a new header", function() {
+			var newHeader = widgetFactory.newHeader();
+			expect(newHeader.type).toEqual("header");
+		});
 	});
 });
