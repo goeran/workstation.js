@@ -317,4 +317,23 @@ describe("keywords", function() {
 			}
 		});
 	});	
+	
+	describe("slider", function() {
+		beforeEach(function() {
+			workstation.ast({});
+			screen("screen 1", function() {
+				slider({ min: 1, max: 3 });
+			});
+		});
+		
+		it("is possible to add it to a screen", function() {
+			expect(lastScreen().numberOfWidgets()).toEqual(1);
+			expect(lastWidget().type).toEqual("slider");		
+		});
+		
+		it("is possible to set min and max", function() {
+			expect(lastWidget().min).toEqual(1);
+			expect(lastWidget().max).toEqual(3);
+		});
+	});
 });
