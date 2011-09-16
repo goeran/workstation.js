@@ -331,6 +331,10 @@ describe("keywords", function() {
 			expect(lastWidget().type).toEqual("slider");		
 		});
 		
+		it("will have a value", function() {
+			expect(lastWidget().value).toBeDefined();
+		});
+		
 		it("is possible to set min and max", function() {
 			expect(lastWidget().min).toEqual(1);
 			expect(lastWidget().max).toEqual(3);
