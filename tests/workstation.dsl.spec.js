@@ -23,10 +23,8 @@ describe("keywords", function() {
 	describe("app", function() {
 		it("should invoke runtime", function() {
 			runtimeWasInvoked = false;
-			workstation.runtime = {
-				run: function() {
+			workstation.runtime.run = function() {
 					runtimeWasInvoked = true;	
-				}
 			}
 			
 			app(function() {
@@ -92,6 +90,20 @@ describe("keywords", function() {
 			expect(getScreen(1).numberOfWidgets()).toEqual(1);
 			expect(getScreen(1).lastWidget().type).toEqual("header");
 			expect(getScreen(1).lastWidget().numberOfWidgets()).toEqual(1);
+		});
+			
+		it("should call beforeOpen when shown", function() {
+			var hasBeenCalled = false;
+			
+			screen({id : "screen 1"}, function() {
+				beforeOpen("screen 1", function(data) {
+					hasBeenCalled = true;
+				});
+			});
+			
+			expect(hasBeenCalled).toBeFalsy();
+			openScreen("screen 1");
+			expect(hasBeenCalled).toBeTruthy();
 		});
 	});
 	
